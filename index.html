@@ -5,11 +5,20 @@
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 </head>
 <body>
+	<script src="http://yandex.st/jquery/1.8.2/jquery.min.js"></script>
 	<script>
 	$(function(){
-
+		$('button').click(function() {
+			return false;
+		})
 	});
 	</script>
+	<style>
+		.result__textarea{
+			width: 100%;
+			height: 300px;
+		}
+	</style>
 	<div class="container">
 		<h3>Выполнили:</h3>
 		<ul>
@@ -18,25 +27,32 @@
 			<li>Лапшина Е. А.</li>
 		</ul>
 		<form>
-			<table>
-				<tr>
-					<td>
-						<input type="text" name="var">
-					</td>
-					<td>
-						<input type="text" name="val">
-					</td>
-					<td>
-						<button class="add btn">+</button>
-						<button class="add btn">-</button>
-					</td>
-				</tr>
-			</table>
+			<div class="row">
+				<input class="span1" type="text" name="var">
+				<input class="span1" type="text" name="val">
+				<button class="add btn">+</button>
+				<button class="add btn">-</button>
+			</div>
+			<div class="row">
+				<input class="span1" type="text" name="var">
+				<input class="span1" type="text" name="val">
+				<button class="add btn">+</button>
+				<button class="add btn">-</button>
+			</div>
+			<div class="row">
+				<input class="span1" type="text" name="var">
+				<input class="span1" type="text" name="val">
+				<button class="add btn">+</button>
+				<button class="add btn">-</button>
+			</div>
 		</form>
-		<button class="btn" onclick="alert(':-)');">Сделать круто!</button>
+		<div class="result row">
+			<textarea class="result__textarea"></textarea>
+		</div>
+		<a href="asdas" class="btn" onclick="alert(':-)');">Сделать круто!</a>
 	</div>
 	
-	<script src="http://yandex.st/jquery/1.8.2/jquery.min.js"></script>
+	
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
