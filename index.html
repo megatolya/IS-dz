@@ -50,7 +50,7 @@ function getLowestNumbers (obj){
 function checkNumbers(numbers) {
 	found = false;
 	$.each(numbers, function(k, v) {
-		if(v.num1 == undefined)
+		if(!(v instanceof Graph))
 			found = true;
 	})
 	return found;
@@ -59,14 +59,13 @@ function checkNumbers(numbers) {
 *mins = two numbers
 *link to next graph
 */
-function Graph(mins, numbers, link) {
+function Graph(mins, numbers) {
 	this.num1 = numbers[mins[0]].num;
 	this.num2 = numbers[mins[1]].num;
-	console.log(this.num1);
+	console.log(this.num2 instanceof Graph);
 	this.ver  = parseFloat(numbers[mins[0]].ver) + parseFloat(numbers[mins[1]].ver);
 }
 var numbers = new Array();
-var count = 0;
 function makeGraphs(numbers, graphs) {
 	var mins = getLowestNumbers(numbers);
 	var graph = new Graph(mins, numbers);
@@ -87,9 +86,10 @@ function makeGraphs(numbers, graphs) {
 			numbers[k].ver = a['val'][k];
 			numbers[k].num = a['var'][k];
 		});
+
 		makeGraphs(numbers);	
+
 		$('button').click(function() {
-			
 			return false;
 		});
 	});
