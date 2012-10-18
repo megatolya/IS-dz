@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 </head>
 <body>
-	<script src="http://yandex.st/jquery/1.8.2/jquery.min.js"></script>
+	<script src="jq.js"></script>
 	<script>
 	$.fn.serializeObject = function () {
     var o = {};
@@ -37,58 +37,60 @@ function getLowestNumbers (obj){
 	min = obj[0].ver;
 	var newArr = obj;
 	min = newArr[0].ver;
-		newArr.splice(id, 1);
+		
 	$(newArr).each(function(key, v) {
-		if (min > v.ver) {
+		if (min > v.ver && key!=id) {
 			min = v.ver;
 			id2 = key;
 		}
 	});
-
-	/*$(obj).each(function(k, v) {
-		if(k != id){
-			console.log(v)
-			console.log(min)
-			if (min > v.ver) {
-				min = v.ver;
-				id2 = k;
-			}
-		}
-	});*/
 	return [id,id2];
+}
+//проверяет остались ли числа не входящие в граф
+function checkNumbers(numbers) {
+	found = false;
+	$.each(numbers, function(k, v) {
+		if(v.num1 == undefined)
+			found = true;
+	})
+	return found;
 }
 /**
 *mins = two numbers
 *link to next graph
 */
-function Graph(mins, link) {
-	this.num1 = numbers[mins[0]];
-	this.num2 = numbers[mins[1]];
-
-	this.link = link;
+function Graph(mins, numbers, link) {
+	this.num1 = numbers[mins[0]].num;
+	this.num2 = numbers[mins[1]].num;
+	console.log(this.num1);
+	this.ver  = parseFloat(numbers[mins[0]].ver) + parseFloat(numbers[mins[1]].ver);
 }
 var numbers = new Array();
-function makeGraphs(newArr){
-	var mins = getLowestNumbers(newArr);
+var count = 0;
+function makeGraphs(numbers, graphs) {
+	var mins = getLowestNumbers(numbers);
+	var graph = new Graph(mins, numbers);
+	numbers.splice(mins[0],1);
+	numbers.splice(mins[1],1);
+	numbers.push(graph);
+	if(checkNumbers(numbers)) {
+		console.log(numbers);
+		console.log(getLowestNumbers(numbers));
 
+	}
 }
 	$(function(){
-
 		var a = $('form').serializeObject();
-		
-		$(a.val).each(function(k, v) {
+		numbers = new Array();
+		$.each(a.val, function(k, v) {
 			numbers[k] = {};
 			numbers[k].ver = a['val'][k];
 			numbers[k].num = a['var'][k];
 		});
-
-		
-
-
+		makeGraphs(numbers);	
 		$('button').click(function() {
 			
 			return false;
-
 		});
 	});
 	</script>
@@ -96,6 +98,12 @@ function makeGraphs(newArr){
 		.result__textarea{
 			width: 100%;
 			height: 300px;
+		}
+		input[type="text"]{
+			margin: 0;
+		}
+		.row{
+			margin: 10px 0;
 		}
 	</style>
 	<div class="container">
