@@ -22,7 +22,22 @@
     });
     return o;
 }	;
-
+function findNumber(number, graph) {
+	if(ids.length==0) {
+		if(graph.child.length == 2) {
+			$(graph.child).each(function (){
+				
+			});
+		}	
+	}
+	
+}
+}
+function findNumbers() {
+	$(numbers).each(function(index, number) {
+		findNumber(number, tree);
+	});
+}
 function getLowestNumbers (obj){
 	var min = obj[0].ver;
 	var id = 0;
@@ -46,7 +61,11 @@ function getLowestNumbers (obj){
 }
 
 function Graph(ids, graph) {
-	this.child = graph || null;
+	switch(arguments.length){
+		case 1: this.child = null; break;
+		case 2: this.child = [graph]; break;
+		case 3: this.child = [graph, arguments[2]]; break;
+	}
 	this.ids = ids;	
 	ignore = ignore.concat(ids);
 }
@@ -55,28 +74,33 @@ Graph.prototype.getVer = function () {
 	if(this.ids.length == 2)
 		return parseFloat(numbers[this.ids[0]].ver) + parseFloat(numbers[this.ids[1]].ver);
 	else if(this.ids.length == 1){
-		return parseFloat(numbers[this.ids[0]].ver) + this.child.getVer();
+		return parseFloat(numbers[this.ids[0]].ver) + this.child[0].getVer();
+	} else {
+		return this.child[0].getVer() + this.child[1].getVer();
 	}
 }
 
 // remove from global env
 var ignore = [],
 	numbers = [],
-	tree = [];
+	tree = [],
+	treeDone = false;
 function findMin() {
 	var graphMinVer1 = 1;
 	var graphMinVer2 = 1;
 	var graphMinVerId1 = -1;
 	var graphMinVerId2 = -1;
-	if(tree.lenght > 1) {
+	if(tree.length > 1) {
+
 		$(tree).each(function(index, graph) {
-			if(graph.getVer() < graphMinVer){
+			if(graph.getVer() < graphMinVer1){
 				graphMinVer1 = graph.getVer();
 				graphMinVerId1 = index;
 			}
 		});
 		$(tree).each(function(index, graph) {
-			if(graph.getVer()<graphMinVer && index != graphMinVerId1){
+			console.log('graph min2', index, graph);
+			if(graph.getVer()<graphMinVer2 && index != graphMinVerId1){
 				graphMinVer2 = graph.getVer();
 				graphMinVerId2 = index;
 			}
@@ -112,7 +136,7 @@ function findMin() {
 					{
 						type:( graphMinVer2 == 1 ? 'none' : 'graph' ),
 						id: graphMinVerId2,
-						value: +graphMinVer1	
+						value: +graphMinVer2	
 					},
 					{
 						type:( numberMinVer1 == 1 ? 'none' : 'number' ),
@@ -125,7 +149,7 @@ function findMin() {
 						value: +numberMinVer2	
 					}
 				];
-	console.log(versObj);
+	console.log('versObj', versObj);
 	var minVer1 = 1;
 	var minVer2 = 1;
 	var minVerId1 = -1;
@@ -159,7 +183,8 @@ function findMin() {
 						type:minVerType2
 					}
 				];
-console.log(finalRes);
+console.log('-------------------------');
+console.log('finalRes', finalRes);
 
 	//если число и граф				
 	if((finalRes[0].type == 'graph') && (finalRes[1].type == 'number')) {
@@ -170,24 +195,39 @@ console.log(finalRes);
 	}
 	if((finalRes[1].type == 'graph') && (finalRes[0].type == 'number')) {
 		tree[finalRes[1].id] = new Graph([ finalRes[0].id ], tree[finalRes[1].id]);
+		ignore.push(finalRes[0].id);
 	}
 
 	//два числа
 	if((finalRes[1].type == 'number') && (finalRes[0].type == 'number')) {
 		
 		tree.push(new Graph([finalRes[0].id, finalRes[1].id]));
-		console.log('новая ветка');
 	}
 
 	//два графа
 	if((finalRes[1].type == 'graph') && (finalRes[0].type == 'graph')) {
-		alert('дерево построено');
+		console.log('ДЕРЕВО ПОСТРОЕНО');
+		tree.push(new Graph([], tree[finalRes[0].id], tree[finalRes[1].id]));
+		//TODO проверить какой id больше, с того и отрезать!!!
+		tree.splice(finalRes[0].id,1);
+		tree.splice(finalRes[1].id-1,1);
+		if(ignore.length == numbers.length) {
+
+			console.log('++++++++++ все!');
+			treeDone = true;
+			findNumbers();
+			return;
+		} else {
+			alert('goto 204');
+		}
 	}
-	console.log(tree);
+	console.log('ignore', ignore);
+	console.log('numbers', numbers);
+	console.log('tree', tree);
 }
 
 	$(function(){
-		
+				
 		var a = $('form').serializeObject();
 		
 		$.each(a.val, function(k, v) {
@@ -195,9 +235,8 @@ console.log(finalRes);
 			numbers[k].ver = a['val'][k];
 			numbers[k].num = a['var'][k];
 		});
-		console.log(numbers);
 		tree = [ new Graph(getLowestNumbers(numbers))];
-		for (var i = 0; i <=7; i++) {
+		while (!treeDone) {
 			findMin();
 		};
 			
