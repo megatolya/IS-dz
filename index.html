@@ -35,10 +35,8 @@ function getLowestNumbers (obj){
 		}
 	});
 	min = obj[0].ver;
-	var newArr = obj;
-	min = newArr[0].ver;
 		
-	$(newArr).each(function(key, v) {
+	$(obj).each(function(key, v) {
 		if (min > v.ver && key!=id) {
 			min = v.ver;
 			id2 = key;
@@ -46,48 +44,166 @@ function getLowestNumbers (obj){
 	});
 	return [id,id2];
 }
-//проверяет остались ли числа не входящие в граф
-function checkNumbers(numbers) {
-	found = false;
-	$.each(numbers, function(k, v) {
-		if(!(v instanceof Graph))
-			found = true;
-	})
-	return found;
-}
-/**
-*mins = two numbers
-*link to next graph
-*/
-function Graph(mins, numbers) {
-	this.num1 = numbers[mins[0]].num;
-	this.num2 = numbers[mins[1]].num;
-	console.log(this.num2 instanceof Graph);
-	this.ver  = parseFloat(numbers[mins[0]].ver) + parseFloat(numbers[mins[1]].ver);
-}
-var numbers = new Array();
-function makeGraphs(numbers, graphs) {
-	var mins = getLowestNumbers(numbers);
-	var graph = new Graph(mins, numbers);
-	numbers.splice(mins[0],1);
-	numbers.splice(mins[1],1);
-	numbers.push(graph);
-	if(checkNumbers(numbers)) {
-		console.log(numbers);
-		console.log(getLowestNumbers(numbers));
 
+function Graph(ids, graph) {
+	this.child = graph || null;
+	this.ids = ids;	
+	ignore = ignore.concat(ids);
+}
+Graph.prototype.getVer = function () {
+	//todo 1 число в массиве
+	if(this.ids.length == 2)
+		return parseFloat(numbers[this.ids[0]].ver) + parseFloat(numbers[this.ids[1]].ver);
+	else if(this.ids.length == 1){
+		return parseFloat(numbers[this.ids[0]].ver) + this.child.getVer();
 	}
 }
+
+// remove from global env
+var ignore = [],
+	numbers = [],
+	tree = [];
+function findMin() {
+	var graphMinVer1 = 1;
+	var graphMinVer2 = 1;
+	var graphMinVerId1 = -1;
+	var graphMinVerId2 = -1;
+	if(tree.lenght > 1) {
+		$(tree).each(function(index, graph) {
+			if(graph.getVer() < graphMinVer){
+				graphMinVer1 = graph.getVer();
+				graphMinVerId1 = index;
+			}
+		});
+		$(tree).each(function(index, graph) {
+			if(graph.getVer()<graphMinVer && index != graphMinVerId1){
+				graphMinVer2 = graph.getVer();
+				graphMinVerId2 = index;
+			}
+		});
+	} else {
+		graphMinVer1 = tree[0].getVer();
+		graphMinVerId1 = 0;
+	}
+	var numberMinVer1 = 1;
+	var numberMinVer2 = 1;
+	var numberMinVerId1 = -1;
+	var numberMinVerId2 = -1;
+	$(numbers).each(function(index, number) {
+		if((number.ver < numberMinVer1) && (ignore.indexOf(index)==-1)) {
+			numberMinVer1 = number.ver;
+			numberMinVerId1 = index;
+		}
+	});
+	$(numbers).each(function(index, number) {
+		if((number.ver < numberMinVer2) && (ignore.indexOf(index)==-1) && index != numberMinVerId1) {
+			numberMinVer2 = number.ver;
+			numberMinVerId2 = index;
+		}
+	});
+	//объект содержит 2 мин от графов и 2 от чисел
+
+	var versObj = [
+					{
+						type:'graph',
+						id: graphMinVerId1,
+						value: +graphMinVer1
+					},
+					{
+						type:( graphMinVer2 == 1 ? 'none' : 'graph' ),
+						id: graphMinVerId2,
+						value: +graphMinVer1	
+					},
+					{
+						type:( numberMinVer1 == 1 ? 'none' : 'number' ),
+						id: numberMinVerId1,
+						value: +numberMinVer1
+					},
+					{
+						type:( numberMinVer2 == 1 ? 'none' : 'number' ),
+						id: numberMinVerId2,
+						value: +numberMinVer2	
+					}
+				];
+	console.log(versObj);
+	var minVer1 = 1;
+	var minVer2 = 1;
+	var minVerId1 = -1;
+	var minVerId2 = -1;
+	var minVerType1 = '';
+	var minVerType2 = '';
+	$(versObj).each(function(index, obj) {
+		if(obj.type != 'none' && obj.value < minVer1 ){
+			minVer1 = obj.value;
+			minVerId1 = obj.id;
+			minVerType1 = obj.type;
+		}
+	});
+	$(versObj).each(function(index, obj) {
+		if(obj.type != 'none' && obj.value < minVer2 && obj.id!=minVerId1 ){
+			minVer2 = obj.value;
+			minVerId2 = obj.id;
+			minVerType2 = obj.type;
+		}
+	});
+
+	var finalRes = [
+					{
+						value:minVer1,
+						id:minVerId1,
+						type:minVerType1
+					},
+					{
+						value:minVer2,
+						id:minVerId2,
+						type:minVerType2
+					}
+				];
+console.log(finalRes);
+
+	//если число и граф				
+	if((finalRes[0].type == 'graph') && (finalRes[1].type == 'number')) {
+
+		tree[finalRes[0].id] = new Graph([ finalRes[1].id ], tree[finalRes[0].id]);
+		console.log('добавили к графу', tree[finalRes[0].id]);
+
+	}
+	if((finalRes[1].type == 'graph') && (finalRes[0].type == 'number')) {
+		tree[finalRes[1].id] = new Graph([ finalRes[0].id ], tree[finalRes[1].id]);
+	}
+
+	//два числа
+	if((finalRes[1].type == 'number') && (finalRes[0].type == 'number')) {
+		
+		tree.push(new Graph([finalRes[0].id, finalRes[1].id]));
+		console.log('новая ветка');
+	}
+
+	//два графа
+	if((finalRes[1].type == 'graph') && (finalRes[0].type == 'graph')) {
+		alert('дерево построено');
+	}
+	console.log(tree);
+}
+
 	$(function(){
+		
 		var a = $('form').serializeObject();
-		numbers = new Array();
+		
 		$.each(a.val, function(k, v) {
 			numbers[k] = {};
 			numbers[k].ver = a['val'][k];
 			numbers[k].num = a['var'][k];
 		});
+		console.log(numbers);
+		tree = [ new Graph(getLowestNumbers(numbers))];
+		for (var i = 0; i <=7; i++) {
+			findMin();
+		};
+			
 
-		makeGraphs(numbers);	
+
+			
 
 		$('button').click(function() {
 			return false;
