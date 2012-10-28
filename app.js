@@ -84,6 +84,7 @@ function findNumbers() {
         str += findNumber(index, tree[0]);
     });
     console.log('result = ', str);
+    $('.result').text('Ответ: ' + str);
 }
 function getLowestNumbers (obj){
     var min = obj[0].ver;
@@ -276,24 +277,45 @@ nothing('finalRes', finalRes);
 }
 
 $(function(){
-
-    var a = $('form').serializeObject();
-
-    $.each(a.val, function(k, v) {
-        numbers[k] = {};
-        numbers[k].ver = a['val'][k];
-        numbers[k].num = a['var'][k];
+    $('.calc').on('click', function() {
+        $('.result').slideDown('200');
+        if($(this).hasClass('restart')){
+            window.location.reload();
+        }
+        $(this)
+            .text('Перезагрузите страницу, чтобы посчтать еще раз.')
+            .addClass('restart');
+        ignore = [];
+        numbers = [];
+        tree = [];
+        treeDone = false;
+        var a = $('form').serializeObject();
+        $.each(a.val, function(k, v) {
+            numbers[k] = {};
+            numbers[k].ver = a['val'][k];
+            numbers[k].num = a['var'][k];
+        });
+        tree = [ new Graph(getLowestNumbers(numbers))];
+        while (!treeDone) {
+            findMin();
+        };
     });
-    tree = [ new Graph(getLowestNumbers(numbers))];
-    while (!treeDone) {
-        findMin();
-    };
+
+    $('form')
+        .on('click', '.remove', function(e) {
+            e.preventDefault();
+            $(this).parent().hide(200, function() {$(this).remove();});
+
+        })
+        .on('click', '.add', function(e) {
+            e.preventDefault();
+            var html = Mustache.render($('#input-row').html());
+          $(this).parent()
+              .after(html)
+              .hide()
+              .show(200);
+
+        });
 
 
-
-
-
-    $('button').click(function() {
-        return false;
-    });
 });
