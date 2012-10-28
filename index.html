@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <title>Информационная Безопасность</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+
+    <style>
+        .result{
+            width: 100%;
+            display: none;
+        }
+        input[type="text"]{
+            margin: 0;
+        }
+        .row{
+            margin: 10px 0;
+        }
+    </style>
+    <div class="container">
+        <div class="well">
+            <h1>Выполнили:</h1>
+            <ul>
+                <li>Островский А. Л.</li>
+                <li>Стамболишвили Д. А.</li>
+                <li>Лапшина Е. А.</li>
+            </ul>
+        </div>
+        <form>
+            <div class="row">
+                <input class="span1" type="text" value="1" name="var">
+                <input class="span1" type="text" value="0.05" name="val">
+                <button class="add btn">+</button>
+                <button class="remove btn">-</button>
+            </div>
+            <div class="row">
+                <input class="span1" type="text" value="2" name="var">
+                <input class="span1" type="text" value="0.06" name="val">
+                <button class="add btn">+</button>
+                <button class="remove btn">-</button>
+            </div>
+            <div class="row">
+                <input class="span1" type="text"  value="3" name="var">
+                <input class="span1" type="text" value="0.02" name="val">
+                <button class="add btn">+</button>
+                <button class="remove btn">-</button>
+            </div>
+            <div class="row">
+                <input class="span1" type="text"  value="4" name="var">
+                <input class="span1" type="text" value="0.08" name="val">
+                <button class="add btn">+</button>
+                <button class="remove btn">-</button>
+            </div>
+            <div class="row">
+                <input class="span1" type="text"  value="5" name="var">
+                <input class="span1" type="text" value="0.01" name="val">
+                <button class="add btn">+</button>
+                <button class="remove btn">-</button>
+            </div>
+        </form>
+        <!-- <div class="result row">
+            <textarea class="result__textarea"></textarea>
+        </div> -->
+        <a href="#" class="btn calc" onclick="return false;">Посчитать</a>
+        <br>
+        <br>
+        <div class="well result"></div>
+    </div>
+
+    <script src="jq.js"></script>
+    <script src="mustache.js"></script>
+    <script src="app.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/html" id="input-row">
+    		<div class="row">
+                <input class="span1" type="text"  value="" name="var">
+                <input class="span1" type="text" value="" name="val">
+                <button class="add btn">+</button>
+                <button class="remove btn">-</button>
+            </div>
+    </script>
+</body>
+</html>
