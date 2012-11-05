@@ -15,15 +15,13 @@ $.fn.serializeObject = function () {
 };
 
 function showResult() {
-    var str = '';
-    console.log('sad');
+    var str = '<h2>Ответ:</h2><br>';
     $.each(numbers, function(k, v) {
-        console.log(v);
-
-
-        str += k+' = '+v.code + '; ';
+        str += '<span class="result__number">'+k+' = '+v.code + '</span>';
     });
-    $('.result').text(str);
+    $('.result').html(str).fadeIn(300, function() {
+        console.log('Готово');
+    });
 }
 
 // remove from global env
@@ -34,44 +32,49 @@ var ignore = [],
     ready2 = false,
     treeDone = false;
 function shenonFano(str) {
-    console.log('fano begin, str = ', str);
+    console.log('получили строку: ', str);
     var str1 = str.slice(0, str.length/2);
     var str2 = str.slice(str.length/2);
     var str1var2 = str.slice(0, (str.length+1)/2);
     var str2var2 = str.slice((str.length+1)/2);
-    console.log('сравниваем строки', str1, str1var2);
-    console.log('сравниваем строки2', str2, str2var2);
-    console.log([str1, str2]);
+    console.log('строка после разбиения', [str1, str2]);
     var sum11=0,
         sum12=0,
         sum21=0,
         sum22=0;
+    //считаем суммы вероятностей для 2х вариантов
     for (var i = 0; i <= str1.length - 1; i++) {
         sum11 += numbers[str1[i]].ver;
-        //numbers[str1[i]].code += '1';
     };
     for (var i = 0; i <= str1var2.length - 1; i++) {
         sum12 += numbers[str1var2[i]].ver;
-        //numbers[str1[i]].code += '1';
     };
-   /* for (var i = 0; i <= str2.length - 1; i++) {
+    for (var i = 0; i <= str2.length - 1; i++) {
         sum21 += numbers[str2[i]].ver;
-        //numbers[str2[i]].code += '0';
     };
     for (var i = 0; i <= str2var2.length - 1; i++) {
         sum22 += numbers[str2var2[i]].ver;
-        //numbers[str2[i]].code += '0';
-    };*/
+    };
     console.log('сравниваем строки по суммам. первая половина, вариант 1', str1, sum11);
-    console.log('сравниваем строки по суммам. первая половина, вариант 2', str1var2, sum12);
     console.log('сравниваем строки по суммам. вторая половина, вариант 1', str2, sum21);
+    console.log('сравниваем строки по суммам. первая половина, вариант 2', str1var2, sum12);
     console.log('сравниваем строки по суммам. вторая половина, вариант 2', str2var2, sum22);
-console.log('сравниваем вариант 1', str1,str2, parseFloat(sum11)+parseFloat(sum21));
-console.log('сравниваем вариант 2', str1var2,str2var2, parseFloat(sum12)+parseFloat(sum22));
-    /*if( sum11-sum21 < 0 ? (sum11-sum21)*(-1) : (sum11-sum21)   >= sum21-sum22 < 0 ? (sum21-sum22)*(-1) : (sum21-sum22) ) {
+    var testSum1 = sum11-sum21;
+    testSum1 = Math.abs(testSum1);
+    console.log('тестовая разница в варианте 1', testSum1);
+    var testSum2 = sum12-sum22;
+    testSum2 = Math.abs(testSum2);
+    console.log('тестовая разница в варианте 2', testSum2);
+
+    if(testSum2 < testSum1) {
         str1 = str1var2;
         str2 = str2var2;
-    }*/
+        console.log('выбираем 2 вариант');
+    } else {
+        console.log('выбираем 1 вариант');
+    }
+
+    //записываем код в глобальный массив чисел
     for (var i = 0; i <= str1.length - 1; i++) {
         numbers[str1[i]].code += '1';
     };
@@ -81,6 +84,7 @@ console.log('сравниваем вариант 2', str1var2,str2var2, parseFlo
     if(str1.length > 1)
         shenonFano(str1);
     else{
+        //подстрока кончилась
         ready1=true;
         if(ready2)
             showResult();
@@ -88,6 +92,7 @@ console.log('сравниваем вариант 2', str1var2,str2var2, parseFlo
     if(str2.length > 1)
         shenonFano(str2)
     else{
+        //подстрока кончилась
         ready2=true;
         if(ready1)
             showResult();
@@ -96,9 +101,12 @@ console.log('сравниваем вариант 2', str1var2,str2var2, parseFlo
 
 $(function(){
     $('.calc').on('click', function() {
-        $('.result').slideDown('200');
-
-
+        ignore = [];
+        numbers =  {};
+        tree = [];
+        ready1 = false;
+        ready2 = false;
+        treeDone = false;
         var str = '';
         var a = $('form').serializeObject();
         $.each(a.val, function(k, v) {

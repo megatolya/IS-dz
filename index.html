@@ -14,6 +14,15 @@
         input[type="text"]{
             margin: 0;
         }
+        .result__number {
+            margin: 10px;
+            background: whiteSmoke;
+            color: black;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 2px;
+            box-shadow: 1px 1px 1px 1px;
+        }
         .row{
             margin: 10px 0;
         }
@@ -27,12 +36,9 @@
     </style>
     <div class="container">
         <div class="well">
-            <h1>Выполнили:</h1>
-            <ul>
-                <li>Островский А. Л.</li>
-                <li>Стамболишвили Д. А.</li>
-                <li>Лапшина Е. А.</li>
-            </ul>
+            <h1>Алгоритм Шенона-Фано</h1>
+            <h3>Выполнил Островский А. Л. 551 группа</h3>
+
         </div>
         <form>
             <div class="row">
@@ -72,9 +78,6 @@
                 <button class="remove btn">-</button>
             </div>
         </form>
-        <!-- <div class="result row">
-            <textarea class="result__textarea"></textarea>
-        </div> -->
         <a href="#" class="btn calc" onclick="return false;">Посчитать</a>
         <br>
         <br>
@@ -84,7 +87,6 @@
     <script src="jq.js"></script>
     <script src="mustache.js"></script>
     <script src="app.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
     <script type="text/html" id="input-row">
     		<div class="row">
                 <input class="span1" type="text"  value="" name="var">
