@@ -7,8 +7,7 @@
 <body>
 
     <style>
-        .result{
-            width: 100%;
+        .result, .tree{
             display: none;
         }
         input[type="text"]{
@@ -33,6 +32,39 @@
 			font-size: 34px;
 			line-height: 7px;
         }
+        .zero, .one{
+            padding: 5px;
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            background: red;
+        }
+        .zero:after{
+            font-size: 14px;
+            padding: 3px;
+            background: black;
+            content: '0'
+        }
+        .one:after{
+            font-size: 14px;
+            padding: 3px;
+            background: black;
+            content: '1'
+        }
+        .one{
+            background: blue;
+        }
+        .zero_child, .one_child{
+
+            margin-left:60px;
+        }
+        .tree_number{
+            color:white;
+            background: black;
+            font-weight: bold;
+            font-size: 26px;
+        }
+
     </style>
     <div class="container">
         <div class="well">
@@ -82,6 +114,10 @@
         <br>
         <br>
         <div class="well result"></div>
+        <div class="well tree">
+
+        </div>
+
     </div>
 
     <script src="jq.js"></script>
@@ -94,6 +130,12 @@
                 <button class="add btn">+</button>
                 <button class="remove btn">-</button>
             </div>
+    </script>
+    <script type="text/html" id="tree">
+        <div class="zero"></div>
+        <div class="zero_child"></div>
+        <div class="one"></div>
+        <div class="one_child"></div>
     </script>
 </body>
 </html>

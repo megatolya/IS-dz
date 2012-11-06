@@ -14,13 +14,64 @@ $.fn.serializeObject = function () {
     return o;
 };
 
+function findTree(key, code) {
+    console.log(key, code);
+    var selector = '';
+    code = code.split('');
+    $(code).each(function(k, v) {
+        if(k==code.length-1) {
+            if(v=='1') {
+                selector += '.one';
+            } else {
+                selector += '.zero';
+            }
+            return;
+        } else {
+            if(v=='1') {
+                selector += '.one_child>';
+            } else {
+                selector += '.zero_child>';
+            }
+        }
+    });
+    $('.tree>'+selector).html('<span class="tree_number">'+key+'</span>').addClass('hasNum');
+}
+function makeTree(node, count) {
+    count--;
+    var html = Mustache.render($('#tree').html());
+    node.html(html);
+    if(count>0) {
+        makeTree(node.find('.zero_child'), count);
+        makeTree(node.find('.one_child'), count);
+    }
+}
+
 function showResult() {
     var str = '<h2>Ответ:</h2><br>';
+    var max = 0;
     $.each(numbers, function(k, v) {
+        if(v.code.length>max)
+            max = v.code.length;
         str += '<span class="result__number">'+k+' = '+v.code + '</span>';
     });
+
     $('.result').html(str).fadeIn(300, function() {
         console.log('Готово');
+        makeTree($('.tree'), max);
+        $('.tree').fadeIn(200);
+        setTimeout(function() {
+
+            $.each(numbers, function(k, v) {
+                findTree(k, v.code);
+            });
+        }, 2000);
+        setTimeout(function() {
+            $('.zero_child, .one_child').each(function(k, v) {
+                if($(v).find('.hasNum').length==0) {
+                    $(v).html('');
+                }
+            });
+        }, 4000);
     });
 }
 
