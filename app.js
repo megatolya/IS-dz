@@ -57,7 +57,7 @@ function showResult() {
         if(v.code.length>max)
             max = v.code.length;
         
-        var ver = v.code.length*(sum/v.ver);
+        var ver = v.code.length*(v.ver/sum);
         str += '<span class="result__number">'+k+' = '+v.code + ', вероятность: '+ver+'</span>';
     });
 
