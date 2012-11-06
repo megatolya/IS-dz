@@ -49,10 +49,16 @@ function makeTree(node, count) {
 function showResult() {
     var str = '';
     var max = 0;
+    var sum = 0;
+    $.each(numbers, function(k,v) {
+        sum+=v.ver;
+    });
     $.each(numbers, function(k, v) {
         if(v.code.length>max)
             max = v.code.length;
-        str += '<span class="result__number">'+k+' = '+v.code + '</span>';
+        
+        var ver = v.code.length*(sum/v.ver);
+        str += '<span class="result__number">'+k+' = '+v.code + ', вероятность: '+ver+'</span>';
     });
 
     $('.result').html(str).fadeIn(300, function() {
