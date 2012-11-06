@@ -63,7 +63,7 @@ function showResult() {
         verSum +=ver;
         str += '<span class="result__number">'+k+' = '+v.code + ', вероятность: '+ver+'</span>';
     });
-    str +='Средняя длина = ' . verSum;
+    str +='Средняя длина = ' + verSum;
     $('.result').html(str).fadeIn(300, function() {
         console.log('Готово');
         makeTree($('.tree'), max);
