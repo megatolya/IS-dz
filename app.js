@@ -47,7 +47,7 @@ function makeTree(node, count) {
 }
 
 function showResult() {
-    var str = '<h2>Ответ:</h2><br>';
+    var str = '';
     var max = 0;
     $.each(numbers, function(k, v) {
         if(v.code.length>max)
