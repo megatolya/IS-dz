@@ -50,6 +50,8 @@ function showResult() {
     var str = '';
     var max = 0;
     var sum = 0;
+    var verSum = 0;
+
     $.each(numbers, function(k,v) {
         sum+=v.ver;
     });
@@ -58,9 +60,10 @@ function showResult() {
             max = v.code.length;
         
         var ver = v.code.length*(v.ver/sum);
+        verSum +=ver;
         str += '<span class="result__number">'+k+' = '+v.code + ', вероятность: '+ver+'</span>';
     });
-
+    str +='Средняя длина = ' . verSum;
     $('.result').html(str).fadeIn(300, function() {
         console.log('Готово');
         makeTree($('.tree'), max);
